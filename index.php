@@ -1,16 +1,27 @@
-<h1>Hello</h1>
 <?php
 	echo "<pre>\n";
 	$pdo = new PDO('mysql:host=localhost;port=3306;dbname=misc','Varnika','zap');
-	$stmt = $pdo->query("SELECT * FROM users");
-	echo '<table border = "4">';
-	while($row = $stmt->fetch(PDO::FETCH_ASSOC))
-	{
-		echo "<tr><td>";
-		echo ($row['name']) ,"</td><td>";
-		echo ($row['email']) ,"</td><td>";
-		echo ($row['password']), "</td></tr>";
-	}
-	echo "</table>";
-	echo "</pre>\n";
+	if ( isset($_POST['name']) && isset($_POST['email'])
+     && isset($_POST['password'])) {
+    $sql = "INSERT INTO users (name, email, password)
+               VALUES (:name, :email, :password)";
+    echo("<pre>\n".$sql."\n</pre>\n");
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(array(
+        ':name' => $_POST['name'],
+        ':email' => $_POST['email'],
+        ':password' => $_POST['password']));
+}
 ?>
+<html>
+	<head></head>
+	<body>
+	<p>Add A New User</p>
+		<form method="post">
+			<p>Name:<input type="text" name="name" size="40"></p>
+			<p>Email:<input type="text" name="email"></p>
+			<p>Password:<input type="password" name="password"></p>
+			<p><input type="submit" value="Add New"/></p>
+		</form>
+	</body>
+</html>
